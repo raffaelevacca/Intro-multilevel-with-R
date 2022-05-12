@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Project-specific files
+*.key
+W6_Multilevel alias
+
+# Mac OS
+.DS_Store
