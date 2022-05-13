@@ -17,6 +17,7 @@
 library(tidyverse)
 library(car)
 library(lme4)
+library(lmerTest)
 library(ggeffects)
 library(magrittr)
 library(broom)
@@ -65,11 +66,12 @@ df <- left_join(stud_data, school_data, by="school")
 
 df
 
-# Groups should be a factor (i.e., categorical variable)
+# Groups (school ID) should be a factor (i.e., categorical variable)
 df %<>% 
   mutate(school = factor(school))
 
-# Frequencies of school sector
+# Frequencies of school sector: 
+
 # N schools
 school_data %>%
   count(sector)
@@ -103,8 +105,7 @@ df.cat <- school_data %>%
   filter(sector=="Catholic") %>%
   sample_n(20) %>% 
   pull(school) %>%
-  {filter(df, school %in% .)} # Note the {} brackets so that "." is not used
-# as first argument in filter()
+  {filter(df, school %in% .)} # Note the {} brackets so that "." is not used as first argument in filter()
 
 # Same thing for Public schools
 set.seed(1129)
@@ -167,7 +168,7 @@ nested.df
 # What do the numbers of rows and columns indicate in each school's data frame?
 # (e.g. [47 x 7])
 
-# nested.df$data is a list of data frames, one for each school
+# The column nested.df$data is a list of data frames, one for each school
 class(nested.df$data)
 length(nested.df$data)
 
@@ -176,12 +177,12 @@ length(nested.df$data)
 ## Still nested
 nested.df %>%
   filter(school=="1224") %>%
-  dplyr::select(data) 
+  dplyr::select(school, data) 
 
 ## Unnested
 nested.df %>%
   filter(school=="1224") %>%
-  dplyr::select(data) %>%
+  dplyr::select(school, data) %>%
   unnest(cols = c(data))
 
 # Or get the first element of nested.df$data
@@ -208,8 +209,8 @@ head(lmodels)
 class(lmodels)
 length(lmodels)
 
-# Instead of creating this list as a separate object, we can add each model to
-# its school's row in nested.df.
+# Instead of creating this list as a separate object, we can create it as a new
+# column in nested.df, adding each model to its school's row in nested.df.
 nested.df %<>%
   mutate(model = purrr::map(data, 
                             ~ lm(mathach ~ ses.dev, data= .x)))
@@ -230,6 +231,7 @@ nested.df %>%
 nested.df %>%
   filter(school=="1224") %>%
   pull(model) %>%
+  # This is needed to get the lm object out of the list object
   extract2(1) %>%
   coef
 
@@ -240,7 +242,7 @@ nested.df %>%
   extract2(1) %>%
   broom::tidy()
 
-# Let's apply the same code within mutate to get estimation results for all 
+# Let's apply the same code within mutate to get tidy estimation results for all 
 # models (all schools)
 nested.df %<>%
   mutate(model.results = purrr::map(model, 
@@ -283,23 +285,35 @@ lm.df
     left_join(lm.coeff, by="school")
   )
 
-# Boxplot for school intercepts, by school sector
+# Now we can get a boxplot of school intercepts by school sector
 ggplot(lm.df, aes(x= sector, y= intercept)) + geom_boxplot()
 
-# Boxplot for school SES slopes, by school sector
+# And a boxplot of school SES slopes by school sector
 ggplot(lm.df, aes(x= sector, y= slope)) + geom_boxplot()
+
+# Or both sets of estimates in a scatterplot by school sector
+ggplot(lm.df, aes(x= intercept, y= slope)) + 
+  # Scatterplot
+  geom_point() +
+  # Linear regression line
+  geom_smooth(method="lm") +
+  # Facet by sector
+  facet_wrap(~ sector) +
+  theme_bw()
 
 # Scatterplot of school intercepts by school mean.ses, by sector
 ggplot(lm.df, aes(x= mean.ses, y= intercept)) + 
   geom_point() + 
   geom_smooth(method="loess") +
-  facet_wrap(~ sector)
+  facet_wrap(~ sector) +
+  theme_bw()
 
 # Scatterplot of school slopes by school mean.ses, by sector
 ggplot(lm.df, aes(x= mean.ses, y= slope)) + 
   geom_point() + 
   geom_smooth(method="loess") +
-  facet_wrap(~ sector)
+  facet_wrap(~ sector) +
+  theme_bw()
 
 ## ---- end-separate-reg
 
@@ -312,14 +326,16 @@ ggplot(lm.df, aes(x= mean.ses, y= slope)) +
 mod1 <- lmer(mathach ~ 1 + (1 | school), 
              data=df)
 
-# Model is estimated with Restricted Maximum Likelihood (REML) by default.
+# Model 1 is estimated with Restricted Maximum Likelihood (REML) by default.
 # You can set REML=FALSE to use Maximum Likelihood (ML) instead.
 
 # See results.
-S(mod1)
+
+# lmerTest augmented summary function
+summary(mod1)
 
 # Results in tidy format
-mod1.res <- tidy(mod1)
+(mod1.res <- tidy(mod1))
 
 # To test for significance of school effect, let's estimate a null single-level
 # model
@@ -339,7 +355,7 @@ anova(mod1, mod1_sl)
     # ^2 = Variance
     .^2)
 
-# Residual, individual-level variance
+# Estimate for residual, individual-level variance
 (sigma2_e <- mod1.res %>%
     filter(effect == "ran_pars", group == "Residual") %>%
     # Standard deviation
@@ -362,7 +378,14 @@ mod2 <- lmer(mathach ~ 1 + ses.dev + (1 | school),
              data=df)
 
 # See results.
-S(mod2)
+summary(mod2)
+
+# Another option to test significance of single coefficient estimates.
+Anova(mod2)
+
+# Kenward-Roger "F" tests with Satterthwaite degrees of freedom, which in this 
+# case have very close results (but take much longer to calculate)
+# Anova(mod2, test="F")
 
 # Tidy results
 (mod2.res <- tidy(mod2))
@@ -408,7 +431,7 @@ mod3 <- lmer(mathach ~ 1 + ses.dev + (1 + ses.dev | school),
              data=df)
 
 # Results
-S(mod3)
+summary(mod3)
 
 # Tidy results
 (mod3.res <- tidy(mod3))
@@ -450,7 +473,7 @@ mod4 <- lmer(mathach ~ 1 + mean.ses*ses.dev + sector*ses.dev
              data=df)
 
 # See results
-S(mod4)
+summary(mod4)
 tidy(mod4)
 
 # Test for random slope for ses.dev: compare random intercept vs random slope
@@ -461,7 +484,7 @@ mod5 <- lmer(mathach ~ 1 + mean.ses*ses.dev + sector*ses.dev
              + (1 | school), data=df)
 
 # See results
-S(mod5)
+summary(mod5)
 tidy(mod5)
 
 # Test for random slope: LRT comparing random slope model vs random intercept model
@@ -469,13 +492,6 @@ anova(mod5, mod4)
 
 # Based on the value of the observed Chisq statistic and its p-value, we keep 
 # the random intercept model with fixed slope for ses.dev: mod5
-
-# LRT tests for significance of fixed effects in mod5.
-Anova(mod5)
-
-# Kenward-Roger "F" tests with Satterthwaite degrees of freedom, which in this 
-# case have very close results (but take much longer to calculate)
-# Anova(mod5, test="F")
 
 # Get mod5 predicted values by ses.dev, at different levels of school sector and 
 # mean.ses.
@@ -520,22 +536,22 @@ mod5.res %>%
   filter(effect == "fixed", term == "sectorCatholic") %>%
   pull(estimate)
 
-# Save the fixed intercepts
+# Save the fixed intercepts.
 
-# Fixed intercept for public schools
+# Fixed intercept for public schools.
 (fixed_int_pub <- mod5.res %>%
     filter(effect == "fixed", term == "(Intercept)") %>%
     pull(estimate))
 
-# sectorCatholic fixed "slope"
+# sectorCatholic fixed effect.
 (fixed_slo_cat <- mod5.res %>%
   filter(effect == "fixed", term == "sectorCatholic") %>%
   pull(estimate))
 
-# Fixed intercept for Catholic schools: sum
+# Fixed intercept for Catholic schools: sum.
 (fixed_int_cat <- fixed_int_pub + fixed_slo_cat)
 
-# lme4 can calculate estimates (conditional modes) for the intercept random effect
+# lme4::ranef can calculate estimates (conditional modes) for the intercept random effect
 # for each school
 lme4::ranef(mod5) %>% 
   str
@@ -545,11 +561,11 @@ ranef(mod5)$school %>%
 # Save as data frame
 (school.effects <- ranef(mod5)$school %>%
   as_tibble(rownames = "school") %>%
-    # These are called u_j in certain textbooks
+    # These are called u_j in certain textbooks.
     rename(u_j = `(Intercept)`)
     )
 
-# Note that school is character in this data frame, convert to factor.
+# Note that school is character in this data frame: convert to factor.
 school.effects %<>% 
   mutate(school = factor(school))
 
@@ -558,12 +574,15 @@ school.effects %<>%
 lm.df
 # Join
 school.effects %<>%
-  left_join(lm.df, by="school")
+  left_join(lm.df, by="school") %>%
+  dplyr::select(school, u_j, sector, mean.ses)
+  
 school.effects
 
 # Add a column with the fixed intercept estimate.
 # Remember this is different for Catholic vs Public schools as per calculations 
-# above: we use dplyr::case_when() to set the value depending on sector
+# above: we use dplyr::case_when() to set the fixed intercept estimate
+# for each school depending on sector.
 school.effects %<>%
   mutate(fixed.int = case_when(
     sector == "Public" ~ fixed_int_pub,
@@ -581,7 +600,8 @@ school.effects %<>%
 # View
 school.effects
 
-# "Best" schools: highest average math score at mean values of predictors.
+# "Best" schools: highest value of random intercept (average math score at mean 
+# values of predictors).
 school.effects %>%
   arrange(desc(ran.int))
 

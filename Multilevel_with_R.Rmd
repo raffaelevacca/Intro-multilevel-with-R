@@ -21,10 +21,9 @@ output:
 
 This is an introduction to multilevel analysis with R for my seminars at the [UniMi NASP graduate school](https://www.nasp.eu/training/phd-programmes/esls.html) and [Behave Lab](https://behavelab.org/). You can **download all materials** [here](https://github.com/raffaelevacca/Intro-multilevel-with-R) (GitHub). 
 
-**R packages and references**. I focus on the [`lme4`](https://github.com/lme4/lme4) package for (Restricted) Maximum Likelihood Estimation of linear multilevel models [@bates_fitting_2015; @bates_lme4:_2012], and on its integration with the [`tidyverse`](https://www.tidyverse.org/), a collection of R packages for data science (including `dplyr`, `ggplot2`, and `purrr`) with a common language and set of principles [@wickham_r_2017]. I draw from the presentation of (linear) multilevel modeling by @fox_r_2018 (Ch. 7), and from discussion of statistical modeling with R by
-@wickham_r_2017, particularly Ch. 20. The data come from the [`MathAchieve`](https://rdrr.io/cran/nlme/man/MathAchieve.html) and [`MathAchSchool`](https://rdrr.io/cran/nlme/man/MathAchSchool.html) data frames in the [`nlme`](https://cran.r-project.org/web/packages/nlme/index.html) package (see the links for data documentation).
+**R packages and references**. I focus on the [`lme4`](https://github.com/lme4/lme4) package for (Restricted) Maximum Likelihood Estimation of linear multilevel models [@bates_fitting_2015; @bates_lme4:_2012] and on its integration with the [`tidyverse`](https://www.tidyverse.org/), a collection of R packages for data science (including `dplyr`, `ggplot2`, and `purrr`) with a common language and set of principles [@wickham_r_2017]. I draw from the presentation of (linear) multilevel modeling by @fox_fitting_2018, and from discussion of statistical modeling with R by Wickham and Grolemund [-@wickham_r_2017, particularly Ch. 20]. The data come from the [`MathAchieve`](https://rdrr.io/cran/nlme/man/MathAchieve.html) and [`MathAchSchool`](https://rdrr.io/cran/nlme/man/MathAchSchool.html) data frames in the [`nlme`](https://cran.r-project.org/web/packages/nlme/index.html) package (see the links for data documentation).
 
-**More resources**. For statistical theory and more in-depth treatment of the multilevel models presented in this introduction, see @goldstein_multilevel_2010; @rasbash_lemma:_2008; and @snijders_multilevel_2012. For more information about the R implementation of multilevel models, including different packages and estimation methods, see Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about (Generalized) Linear Mixed Models.
+**Further reading and resources**. For statistical theory and more in-depth treatment of the multilevel models presented in this introduction, see @goldstein_multilevel_2010; @rasbash_lemma:_2008; and @snijders_multilevel_2012. For more information about the R implementation of multilevel models, including different packages and estimation methods, see Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about (Generalized) Linear Mixed Models.
 
 ## Setup instructions
 
@@ -40,21 +39,22 @@ To take this workshop you need to:
 4. Bring your **laptop** to the workshop.
 5. Download the **workshop project folder** [here](https://github.com/raffaelevacca/Intro-multilevel-with-R)
     * Click on the link > Click on the green `Clone` button > Download ZIP > Then unzip the folder in your computer.
-    * I recommend doing this in class at the beginning of the workshop so as to download the most updated version of the folder).
+    * I recommend doing this in class at the beginning of the workshop so as to download the most updated version of the folder.
 
-Once in class, go to the workshop project folder (point 5 above) and double-click on the workshop _R project_ file (`Multilevel_with_R.Rproj`) in it. That will open RStudio.
+Once in class, go to the workshop project folder (point 5 above) and double-click on the workshop R project file (`Multilevel_with_R.Rproj`) in it. This will open RStudio.
 
 ## Required R packages {#packages}
 
 * General
     - [`broom`](https://broom.tidymodels.org/) to view model results as tidy tibbles.
     - [`magrittr`](https://magrittr.tidyverse.org/) for pipe and related operators.
-    - [`tidyverse`](https://www.tidyverse.org/). 
+    - [`tidyverse`](https://www.tidyverse.org/)
 * To fit multilevel models and view their results
     - [`broom.mixed`](https://cran.r-project.org/web/packages/broom.mixed/vignettes/broom_mixed_intro.html)
-    - [`car`](https://cran.r-project.org/web/packages/car/index.html)
-    - [`ggeffects`](https://strengejacke.github.io/ggeffects/)
-    - [`lme4`](https://github.com/lme4/lme4)
+    - [`car`](https://cran.r-project.org/web/packages/car/index.html) for tests of significance.
+    - [`ggeffects`](https://strengejacke.github.io/ggeffects/) to calculate and visualize predicted values.
+    - [`lme4`](https://github.com/lme4/lme4) for specifying and estimating multilevel models.
+    - [`lmerTest`](https://www.jstatsoft.org/article/view/v082i13) for tests of significance on multilevel models.
 
 
 ```{r include=FALSE, cache=FALSE}
@@ -62,17 +62,21 @@ Once in class, go to the workshop project folder (point 5 above) and double-clic
 knitr::read_chunk("Multilevel_with_R.R")
 ```
 
-# Explore the data
+# Explore and prepare the data
 
-* Import and view the data.
-* Obtain basic information about the multilevel data structure.
+* Import and view the data in R.
+* Obtain basic information about the multilevel structure of the data.
+* Our dependent variable will be student's score from math assessment (`mathach`).
+* Explanatory variables:
+  * Student characteristics: score of socioeconomic status (SES), in deviation from school SES mean (`ses.dev`).
+  * School characteristics: school's mean SES (`mean.ses`) and school sector (Public vs Catholic, `sector`).
 
 ```{r explore, message = FALSE}
 ```
 
-* How many students and schools are there in the data?
-* What's the average number of students per school?
-* How many schools are Catholic, how many are Public?
+* _How many students and schools are in the data?_
+* _What's the average number of students per school?_
+* _How many schools are Catholic, how many are Public?_
 
 # Separate analyses by school: scatter plots
 
@@ -82,41 +86,45 @@ knitr::read_chunk("Multilevel_with_R.R")
 ```{r scatterplots}
 ```
 
-* What do you notice about intercepts and slopes of the red regression lines? Are they constant among schools? 
-* What type of relationship between student's SES and math score do you see in schools? Does this relationship change between schools?
-* What are some patterns in this variability among Catholic schools and, in contrast, among Public schools?
+* _What do you notice about intercepts and slopes of the red regression lines? Are they constant among schools? _
+* _What type of relationship between student's SES and math score do you see in schools? Does this relationship change between schools?_
+* _Do you see any difference in the variability of regression lines among Catholic schools vis-a-vis Public schools?_
 
 # Separate analyses by school: linear regressions
 
-* Create a school-level nested data frame with each school's data frame in that school's row (`nested.df`).
-* Estimate a separate linear regression model of math achievement on SES in each school.
+* Create a school-level nested data frame (`nested.df`) with each school's row including the data frame for that school's students.
+* Use `nested.df` and `purrr::map` to estimate a separate linear regression model of math achievement on SES in each school.
 * Put estimation results in new columns in the nested data frame.
 * Visualize estimation results: 
   - Distribution of intercept and slope estimates by school sector (boxplots).
   - Distribution of intercept and slope estimates by school mean SES, by school sector (scatter plots).
 
-```{r separate-reg}
+```{r separate-reg, out.width= "100%", fig.height = 4}
 ```
 
-* In `nested.df$data`, what do the numbers of rows and columns indicate in each school's data frame?
-* What differences do you see between the distribution of estimated *intercepts* in Public vs Catholic schools? What does this mean substantively?
-* What differences do you see between the distribution of estimated *slopes* in Public vs Catholic schools? How do you interpret this substantively?
-* What relationship emerges between school mean SES and school's estimated intercept? What about the same relationship for school's estimated slope? Are there differences between Public and Catholic schools in this respect?
+* _In `nested.df$data`, what do the numbers of rows and columns indicate in each school's data frame?_
+* _What differences do you see between the distribution of estimated *intercepts* in Public vs Catholic schools? What does this mean substantively?_
+* _What differences do you see between the distribution of estimated *slopes* in Public vs Catholic schools? How do you interpret this substantively?_
+* _What relationship emerges between school mean SES and school's estimated intercept? What about the same relationship for school's estimated slope? Are there differences between Public and Catholic schools in this respect?_
 
 # Hierarchical Linear Model: variance components
 
-* Estimate a variance components model (`mod1`): a random intercept model with no predictor, which simply partitions `matchach` variation between student level and school level.
+* Estimate a two-level variance components model with students (level 1) nested in schools (level 2): `mod1`.
+  - This is a random-intercept model with no predictor, which simply partitions `matchach` variation between variation at the student level (between students) and variation at the school level (between schools).
   - Here `mathach` is modeled as resulting from a school random effect (group level) plus a student random effect (individual or residual level): these are called $u_i$ and $e_i$, respectively, by @rasbash_lemma:_2008.
-* Run a Likelihood Ratio Test for the significance of school effects, comparing `mod1` with a similar single-level model with no predictor.
+  - Like all models in this introduction, `mod1` is estimated via Restricted Maximum Likelihood (REML).
+* Run a Likelihood Ratio Test (LRT) for the significance of school effects, comparing `mod1` with the same null linear model (no predictor) without taking into account student clustering in schools (i.e., a single-level model).
 * See estimates for the variance components or random-effect parameters: the student-level variance and school-level variance -- called $\sigma^2_e$ and $\sigma^2_u$, respectively, by @rasbash_lemma:_2008.
-* Use estimates for $\sigma^2_e$ and $\sigma^2_u$ to calculate the Variance Partition Coefficient (VPC). Note that in variance components models and random-intercept models (but not in random slope models) the VPC is the same as the Intraclass Correlation Coefficient.
+* Use estimates for $\sigma^2_e$ and $\sigma^2_u$ to calculate the Variance Partition Coefficient (VPC):
+  * This is the proportion of `mathach` variation that is attributable to the second level, that is, to between-school differences.
+  * Note that in variance components models and random-intercept models (but not in random slope models) the VPC is the same as the Intraclass Correlation Coefficient (the correlation between `mathach` of two random students from the same school).
 
 ```{r var-comp}
 ```
 
-* How can we interpret the results from the variance components model?
-* Are school effects significant, that is, is the school level a significant source of variation in `mathach`?
-* What proportion of `mathach` variation is explained by the school level? How does this compare to the correlation between math scores of two random students in the same school?
+* _How can we interpret the results from the variance components model?_
+* _According to the LRT, are school effects significant, that is, is the school level a significant source of variation in `mathach`?_
+* _What proportion of `mathach` variation is explained by the school level? How does this compare with the correlation between math scores of two random students in the same school?_
 
 # Hierarchical Linear Model: random intercept
 
@@ -124,57 +132,65 @@ knitr::read_chunk("Multilevel_with_R.R")
 * See estimates for the population-level fixed effects (`Intercept` and `ses.dev` slope) and for random-effect parameters.
 * This model is the same as the previous variance components model, except that `mathach` is now explained in part by individual student SES (`ses.dev`), and its unexplained variation is partitioned between individual and school random effects.
   - The VPC increases slightly compared to `mod1`, indicating that a relatively higher proportion of the (unexplained) `mathach` variation is now explained by the school level: in other words, student SES absorbs part of the student-level variation which the previous `mod1` attributed to individual random effects ($e_i$).
+* There is substantial debate on if and how to calculate (and report) p-values in multilevel models: 
+  * See Ben Bolker's GLMM FAQ discussion of [this issue](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#why-doesnt-lme4-display-denominator-degrees-of-freedomp-values-what-other-options-do-i-have), and of [tests of significance](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#testing-hypotheses) for multilevel models in general.
+  * We use [`lmerTest`](https://www.jstatsoft.org/article/view/v082i13)'s modification of the `summary` function to show p-values for single coefficient estimates based on t-tests with Satterthwaite's method.
+  * But note that p-values would not by displayed if we applied the standard `summary` function to our estimated models.
+  * Another option to test the significance of single coefficients is running the [`car::Anova`](https://www.rdocumentation.org/packages/car/versions/3.0-13/topics/Anova) function on the model object [see discussion by @fox_fitting_2018].
 
 ```{r rand-int}
 ```
 
-* How can we interpret the estimates for the fixed-effect parameters?
-* How can we interpret the estimates for the variance components? 
-* Based on the VPC, what proportion of the `mathach` variation _not explained_ by `ses.dev` is attributable to the school level?
-  - How does this differ from the interpretation of VPC in the variance components model?
-  - How can we interpret the increase in VPC compared to `mod1`?
+* _How can we interpret the estimates for the fixed-effect parameters?_
+* _How can we interpret the estimates for the variance components? _
+* _Based on the VPC, what proportion of the `mathach` variation _not explained_ by `ses.dev` is attributable to the school level?_
+  - _How does this differ from the interpretation of VPC in the variance components model `mod1`?_
+  - _How can we interpret the increase in VPC compared to `mod1`?_
 
 # Hierarchical Linear Model: random slope
 
-* Estimate `mod3`, a random intercept model with fixed slope for individual student SES.
-* View estimates for the different random-effect parameters in this model: variance of random intercept, variance of random slope, covariance between random intercept and random slope -- $\sigma^2_{u0}$, $\sigma^2_{u1}$ and $\sigma_{u01}$, respectively, in @rasbash_lemma:_2008.
-  - Note that `lme4` model results show the _correlation_ (not covariance) between random intercept and random slope ($\rho_{u01}$), to get the covariance just multiply the correlation times the two standard deviations: $\rho_{u01}*\sigma_{u0}*\sigma_{u1}$.
+* Estimate `mod3`, a random slope model with in which the effect of individual student SES on math score is allowed to vary between schools.
+* View estimates for the different random-effect parameters in this model: variance of random intercept, variance of random slope, covariance between random intercept and random slope. 
+  * These are called $\sigma^2_{u0}$, $\sigma^2_{u1}$ and $\sigma_{u01}$, respectively, by @rasbash_lemma:_2008.
+  * Note that `lme4` model results show the _correlation_ $\rho_{u01}$ (not the covariance) between random intercept and random slope: to get the covariance just multiply the correlation times the two standard deviations ($\rho_{u01}*\sigma_{u0}*\sigma_{u1}$).
 
 ```{r rand-slo}
 ```
 
-* How many random effect parameters do we have now, compared to previous models? Why?
-* How do we interpret the estimates for random intercept variance and random slope variance?
-* How do we interpret the estimated correlation of random intercept and random slope?
+* _How many random effect parameters do we have now, compared to previous models? Why?_
+* _How do we interpret the estimates for random intercept variance and random slope variance?_
+* _How do we interpret the estimated correlation of random intercept and random slope?_
 
 # Contextual variables and cross-level interactions
 
-* We may hypothesize that school random intercept and random slope are in part explained by school-level ("contextual") variables, for example, `mean.ses` and `sector`. This idea can be represented as a random-slope model with `mean.ses` and `sector` as both main effects and interactions with `ses.dev` (see derivation in slides): `mod4`.
+* We may hypothesize that school random intercept and random slope are in part explained by school-level ("contextual") variables: for example, `mean.ses` and `sector`. 
+  * This idea can be represented as a random-slope model with `mean.ses` and `sector` as both main effects and interactions with `ses.dev` (see derivation in slides): `mod4`.
 * Alternatively, we may estimate the same model but keeping the `ses.dev` slope fixed (i.e., a random-intercept model): `mod5`.
 * We test whether `mod4` explains significantly more variation in the dependent variable compared to the simpler, more parsimonious `mod5` (Likelihood Ratio Test).
-  - Based on LRT results, we don't have evidence to support the random slope (i.e., to reject null hypothesis that the `ses.dev` slope is fixed across schools): we choose `mod5` over `mod4`.
-* From `mod5` we obtain predicted values of student `mathach` as a function of student `ses.dev`, given different contexts (i.e., different fixed values of school's `mean.ses` and `sector`). We plot these results.
+  - Based on LRT results, we don't have evidence to support the random slope (i.e., to reject the null hypothesis that the `ses.dev` slope is fixed across schools), so we choose `mod5` over `mod4`.
+* From `mod5` we obtain predicted values of student `mathach` as a function of student `ses.dev`, given different contexts (i.e., different fixed values of school's `mean.ses` and `sector`). We then plot these results.
 
 ```{r contextual, out.width = "100%", fig.height = 3}
 ```
 
-* How many fixed effect parameters do we have now, compared to previous models? Why?
-* What coefficient estimates are in `mod4` but _not_ in `mod5`? Why?
-* How can we substantively interpret results of the LRT comparing `mod4` and `mod5`.
-* How can we interpret the visualization of predicted values from `mod5`? What is the (fixed) effect of `ses.dev` on `mathach`? How does this change in Catholic vs Public schools? How does this change in schools whose student population has on average higher SES?
+* _How many fixed effect parameters do we have now, compared to previous models? Why?_
+* _What coefficient estimates are in `mod4` but _not_ in `mod5`? Why?_
+* _How do we substantively interpret results of the LRT comparing `mod4` and `mod5`?_
+* _How can we interpret the visualization of predicted values from `mod5`? What is the (fixed) effect of `ses.dev` on `mathach`? How does this change in Catholic vs Public schools? How does this change in schools whose student population has higher SES on average?_
 
 # Examining school random effects and random intercepts
 
 * Get the estimate for the fixed, population-level intercept in Public ($\beta_0$) and Catholic ($\beta_0+\beta_3$) schools (see slides for coefficient notation).
-* Get estimates for the random effect of each school (called $u_j$ for each school $j$ by @rasbash_lemma:_2008).
-* Add the fixed intercept to each $u_j$ to obtain each school's estimated realization of the random intercept: $\beta_0+u_j$ for Public schools and $\beta_0+\beta_3+u_j$ for Catholic schools. This is the school's average math score at mean values of predictors.
-* Identify "best" schools based on this measure.
+* Get estimates for the random effect of each school $j$ [called $u_j$ by @rasbash_lemma:_2008].
+* Add the fixed intercept to each $u_j$ to obtain each school's estimated realization of the random intercept: $\beta_0+u_j$ for Public schools and $\beta_0+\beta_3+u_j$ for Catholic schools. 
+  * This is the school's average math score at mean values of predictors (assuming predictors are centered).
+* Identify "best" schools based on random intercept realization.
 * Visualize the distribution of this random intercept and its association with school average SES (`mean.ses`) for Public and Catholic schools.
 
 ```{r rand-eff}
 ```
 
-* How do we interpret the two plots?
+* _How do we interpret these last two plots?_
 
 # References
 
