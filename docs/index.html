@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2022-05-12" />
+<meta name="date" content="2022-05-13" />
 
-<title>Introduction to multilevel analysis with R</title>
+<title>Introduction to multilevel analysis in R with tidyverse and lme4</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1551,21 +1551,21 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Introduction to multilevel analysis with R</h1>
+<h1 class="title toc-ignore">Introduction to multilevel analysis in R with <code>tidyverse</code> and <code>lme4</code></h1>
 <h4 class="author">Raffaele Vacca</h4>
 <address class="author_afil">
 University of Milan<br><a class="author_email" href="mailto:#"><a href="https://www.raffaelevacca.com/">raffaelevacca.com</a></a>
 </address>
-<h4 class="date">2022-05-12</h4>
+<h4 class="date">2022-05-13</h4>
 
 </div>
 
 
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This is an introduction to multilevel analysis with R for my seminars at the <a href="https://www.nasp.eu/training/phd-programmes/esls.html">UniMi NASP graduate school</a> and <a href="https://behavelab.org/">Behave Lab</a>. You can download all materials <a href="https://github.com/raffaelevacca/Intro-multilevel-with-R">here</a> (GitHub).</p>
-<p>The code draws on materials from <span class="citation">Fox and Weisberg (<a href="#ref-fox_r_2018" role="doc-biblioref">2018</a>)</span>, Ch. 7, and from <span class="citation">Wickham and Grolemund (<a href="#ref-wickham_r_2017" role="doc-biblioref">2017</a>)</span>, particularly Ch. 20. The <a href="http://www.jstatsoft.org/v67/i01/"><code>lme4</code></a> package is used for specifying and estimating multilevel models. The data come from <a href="https://rdrr.io/cran/nlme/man/MathAchieve.html"><code>MathAchieve</code></a> and <a href="https://rdrr.io/cran/nlme/man/MathAchSchool.html"><code>MathAchSchool</code></a> data frames in the <a href="https://cran.r-project.org/web/packages/nlme/index.html"><code>nlme</code></a> package.</p>
-<p>For statistical theory and background on the hierarchical linear models seen in this introduction, see <span class="citation">Snijders and Bosker (<a href="#ref-snijders_multilevel_2012" role="doc-biblioref">2012</a>)</span> and <span class="citation">Rasbash, Steele, and Reckie (<a href="#ref-rasbash_lemma:_2008" role="doc-biblioref">2008</a>)</span>.</p>
+<p>This is an introduction to multilevel analysis with R for my seminars at the <a href="https://www.nasp.eu/training/phd-programmes/esls.html">UniMi NASP graduate school</a> and <a href="https://behavelab.org/">Behave Lab</a>. You can <strong>download all materials</strong> <a href="https://github.com/raffaelevacca/Intro-multilevel-with-R">here</a> (GitHub).</p>
+<p><strong>R packages and references</strong>. I focus on the <a href="https://github.com/lme4/lme4"><code>lme4</code></a> package for (Restricted) Maximum Likelihood Estimation of linear multilevel models <span class="citation">(<a href="#ref-bates_fitting_2015" role="doc-biblioref">Bates et al. 2015</a>; <a href="#ref-bates_lme4:_2012" role="doc-biblioref">Bates 2012</a>)</span>, and on its integration with the <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>, a collection of R packages for data science (including <code>dplyr</code>, <code>ggplot2</code>, and <code>purrr</code>) with a common language and set of principles <span class="citation">(<a href="#ref-wickham_r_2017" role="doc-biblioref">Wickham and Grolemund 2017</a>)</span>. I draw from the presentation of (linear) multilevel modeling by <span class="citation">Fox and Weisberg (<a href="#ref-fox_r_2018" role="doc-biblioref">2018</a>)</span> (Ch. 7), and from discussion of statistical modeling with R by <span class="citation">Wickham and Grolemund (<a href="#ref-wickham_r_2017" role="doc-biblioref">2017</a>)</span>, particularly Ch. 20. The data come from the <a href="https://rdrr.io/cran/nlme/man/MathAchieve.html"><code>MathAchieve</code></a> and <a href="https://rdrr.io/cran/nlme/man/MathAchSchool.html"><code>MathAchSchool</code></a> data frames in the <a href="https://cran.r-project.org/web/packages/nlme/index.html"><code>nlme</code></a> package (see the links for data documentation).</p>
+<p><strong>More resources</strong>. For statistical theory and more in-depth treatment of the multilevel models presented in this introduction, see <span class="citation">Goldstein (<a href="#ref-goldstein_multilevel_2010" role="doc-biblioref">2010</a>)</span>; <span class="citation">Rasbash, Steele, and Reckie (<a href="#ref-rasbash_lemma:_2008" role="doc-biblioref">2008</a>)</span>; and <span class="citation">Snijders and Bosker (<a href="#ref-snijders_multilevel_2012" role="doc-biblioref">2012</a>)</span>. For more information about the R implementation of multilevel models, including different packages and estimation methods, see Ben Bolker’s <a href="http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction">FAQ page</a> about (Generalized) Linear Mixed Models.</p>
 <div id="setup-instructions" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Setup instructions</h2>
 <p>To take this workshop you need to:</p>
@@ -1599,7 +1599,7 @@ University of Milan<br><a class="author_email" href="mailto:#"><a href="https://
 <ul>
 <li><a href="https://broom.tidymodels.org/"><code>broom</code></a> to view model results as tidy tibbles.</li>
 <li><a href="https://magrittr.tidyverse.org/"><code>magrittr</code></a> for pipe and related operators.</li>
-<li><a href="https://www.tidyverse.org/"><code>tidyverse</code></a>. This is a collection of different packages that share a common language and set of principles, including <code>dplyr</code>, <code>ggplot2</code>, and <code>purrr</code>. See <a href="http://r4ds.had.co.nz/">Wickham and Grolemund (2017)</a> for more information.</li>
+<li><a href="https://www.tidyverse.org/"><code>tidyverse</code></a>.</li>
 </ul></li>
 <li>To fit multilevel models and view their results
 <ul>
@@ -2947,8 +2947,17 @@ ggplot(school.effects,
     }
 </style>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-bates_lme4:_2012" class="csl-entry">
+Bates, Douglas. 2012. <em>Lme4: <span>Mixed</span>-Effects Modeling with <span>R</span></em>. <a href="https://stat.ethz.ch/~maechler/MEMo-pages/lMMwR.pdf">https://stat.ethz.ch/~maechler/MEMo-pages/lMMwR.pdf</a>.
+</div>
+<div id="ref-bates_fitting_2015" class="csl-entry">
+Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. 2015. <span>“Fitting Linear Mixed-Effects Models Using Lme4.”</span> <em>Journal of Statistical Software</em> 67 (1). <a href="https://doi.org/10.18637/jss.v067.i01">https://doi.org/10.18637/jss.v067.i01</a>.
+</div>
 <div id="ref-fox_r_2018" class="csl-entry">
 Fox, John, and Sanford Weisberg. 2018. <em>An <span>R</span> <span>Companion</span> to <span>Applied</span> <span>Regression</span></em>. Third edition. Los Angeles, Calif.: SAGE Publications, Inc.
+</div>
+<div id="ref-goldstein_multilevel_2010" class="csl-entry">
+Goldstein, Harvey. 2010. <em>Multilevel <span>Statistical</span> <span>Models</span></em>. 4 edition. Chichester, West Sussex: Wiley.
 </div>
 <div id="ref-rasbash_lemma:_2008" class="csl-entry">
 Rasbash, J., F. Steele, and George Reckie. 2008. <em><span>LEMMA</span>: <span>Learning</span> Environment for Multilevel Methodology and Applications</em>. University of Bristol: Centre for Multilevel Modelling. <a href="https://www.cmm.bris.ac.uk/lemma">https://www.cmm.bris.ac.uk/lemma</a>.
@@ -2957,7 +2966,7 @@ Rasbash, J., F. Steele, and George Reckie. 2008. <em><span>LEMMA</span>: <span>L
 Snijders, Tom, and R. J. Bosker. 2012. <em>Multilevel Analysis: <span>An</span> Introduction to Basic and Advanced Multilevel Modeling</em>. 2nd edition. London; Thousand Oaks, Calif: SAGE Publications.
 </div>
 <div id="ref-wickham_r_2017" class="csl-entry">
-Wickham, Hadley, and Garrett Grolemund. 2017. <em>R for <span>Data</span> <span>Science</span>: <span>Import</span>, <span>Tidy</span>, <span>Transform</span>, <span>Visualize</span>, and <span>Model</span> <span>Data</span></em>. 1 edition. Sebastopol, CA: O’Reilly Media.
+Wickham, Hadley, and Garrett Grolemund. 2017. <em>R for <span>Data</span> <span>Science</span>: <span>Import</span>, <span>Tidy</span>, <span>Transform</span>, <span>Visualize</span>, and <span>Model</span> <span>Data</span></em>. 1 edition. Sebastopol, CA: O’Reilly Media. <a href="http://r4ds.had.co.nz">http://r4ds.had.co.nz</a>.
 </div>
 </div>
 </div>
