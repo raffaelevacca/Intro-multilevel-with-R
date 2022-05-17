@@ -9,7 +9,7 @@
 ############################################################################## #
 
 
-# Load packages and data, explore the data ----
+# Explore and prepare the data ----
 # ============================================================================ =  
 ## ---- explore
 
@@ -82,7 +82,7 @@ df %>%
 ## ---- end-explore
 
 
-# Scatterplot of SES by math score in different schools  ----
+# Separate analyses by school: scatter plots  ----
 # ============================================================================ =  
 ## ---- scatterplots
 
@@ -148,7 +148,7 @@ ggplot(df.pub, aes(x=ses.dev, y=mathach)) +
 ## ---- end-scatterplot
 
 
-# Separate linear regression of math score on SES in each school  ----
+# Separate analyses by school: linear regressions  ----
 # ============================================================================ =  
 
 ## ---- separate-reg
@@ -317,7 +317,7 @@ ggplot(lm.df, aes(x= mean.ses, y= slope)) +
 
 ## ---- end-separate-reg
 
-# HLMs: variance components models ----
+# Hierarchical Linear Model: variance components ----
 # ============================================================================ =  
 
 ## ---- var-comp
@@ -368,7 +368,7 @@ sigma2_u/(sigma2_u + sigma2_e)
 
 ## ---- end-var-comp
 
-# HLMs: random intercept models ----
+# Hierarchical Linear Model: random intercept ----
 # ============================================================================ =  
 
 ## ---- rand-int
@@ -421,7 +421,7 @@ sigma2_u/(sigma2_u + sigma2_e)
 
 ## ---- end-rand-int
 
-# HLMs: random slope models ----
+# Hierarchical Linear Model: random slope ----
 # ============================================================================ =  
 
 ## ---- rand-slo
