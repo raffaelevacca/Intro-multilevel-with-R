@@ -28,10 +28,10 @@ output:
 * I draw from the discussion of (linear) multilevel modeling by @fox_fitting_2018 and @fox_linear_2016. The example used in these materials is originally by @raudenbush_hierarchical_2002. Part of the code is also inspired to Wickham and Grolemund's [-@wickham_r_2017] treatment of statistical modeling with R (particularly in Ch. 20). 
 * The data come from the [`MathAchieve`](https://rdrr.io/cran/nlme/man/MathAchieve.html) and [`MathAchSchool`](https://rdrr.io/cran/nlme/man/MathAchSchool.html) data frames in the [`nlme`](https://cran.r-project.org/web/packages/nlme/index.html) package. They derive from the "High School and Beyond" survey of 7185 students in 160 U.S. high schools, including 70 Catholic and 90 public schools [@fox_linear_2016; @raudenbush_hierarchical_2002]. See the links and references above for more documentation on these data.
 
-**Further reading and resources**: 
+**Further readings and resources**: 
 
-* For statistical theory and more in-depth treatment of the multilevel models presented in this introduction: @goldstein_multilevel_2010; @rasbash_lemma:_2008; @snijders_multilevel_2012; @fox_applied_2016 (Ch. 23-24).
-* For more information about the R implementation of multilevel models, including different packages and estimation methods: Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about Generalized Linear Mixed Models.
+* For statistical theory, details about estimation methods, and more in-depth overall treatment of the multilevel models presented in this introduction (in chronological order): @raudenbush_hierarchical_2002; @gelman_data_2006; @rasbash_lemma:_2008; @goldstein_multilevel_2010; @snijders_multilevel_2012; @simonoff_sage_2013; @fox_applied_2016 (Ch. 23-24).
+* For more information about the R implementation of multilevel models, including different packages and estimation methods: @finch_multilevel_2014; @fox_fitting_2018;  Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about Generalized Linear Mixed Models.
 
 ## Setup instructions
 
