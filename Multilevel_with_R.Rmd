@@ -19,7 +19,8 @@ output:
 
 # Introduction 
 
-This is an introduction to multilevel analysis with R for my seminars at the [UniMi NASP graduate school](https://www.nasp.eu/training/phd-programmes/esls.html) and [Behave Lab](https://behavelab.org/). You can **download all materials** [here](https://github.com/raffaelevacca/Intro-multilevel-with-R) (GitHub). 
+* This is an introduction to multilevel analysis with R for my seminars at the [UniMi NASP graduate school](https://www.nasp.eu/training/phd-programmes/esls.html) and [Behave Lab](https://behavelab.org/). 
+* **Download these materials** [here](https://github.com/raffaelevacca/Intro-multilevel-with-R) (GitHub). 
 
 **R packages and references**:
 
