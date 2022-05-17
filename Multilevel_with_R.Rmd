@@ -1,5 +1,5 @@
 ---
-title: "Introduction to multilevel analysis in R with `tidyverse` and `lme4`"
+title: "Introduction to multilevel analysis in R with `lme4` and `tidyverse`"
 author: 
   name: "Raffaele Vacca"
   email: "[raffaelevacca.com](https://www.raffaelevacca.com/)"
@@ -21,9 +21,16 @@ output:
 
 This is an introduction to multilevel analysis with R for my seminars at the [UniMi NASP graduate school](https://www.nasp.eu/training/phd-programmes/esls.html) and [Behave Lab](https://behavelab.org/). You can **download all materials** [here](https://github.com/raffaelevacca/Intro-multilevel-with-R) (GitHub). 
 
-**R packages and references**. I focus on the [`lme4`](https://github.com/lme4/lme4) package for (Restricted) Maximum Likelihood Estimation of linear multilevel models [@bates_fitting_2015; @bates_lme4:_2012] and on its integration with the [`tidyverse`](https://www.tidyverse.org/), a collection of R packages for data science (including `dplyr`, `ggplot2`, and `purrr`) with a common language and set of principles [@wickham_r_2017]. I draw from the presentation of (linear) multilevel modeling by @fox_fitting_2018, and from discussion of statistical modeling with R by Wickham and Grolemund [-@wickham_r_2017, particularly Ch. 20]. The data come from the [`MathAchieve`](https://rdrr.io/cran/nlme/man/MathAchieve.html) and [`MathAchSchool`](https://rdrr.io/cran/nlme/man/MathAchSchool.html) data frames in the [`nlme`](https://cran.r-project.org/web/packages/nlme/index.html) package (see the links for data documentation).
+**R packages and references**:
 
-**Further reading and resources**. For statistical theory and more in-depth treatment of the multilevel models presented in this introduction, see @goldstein_multilevel_2010; @rasbash_lemma:_2008; and @snijders_multilevel_2012. For more information about the R implementation of multilevel models, including different packages and estimation methods, see Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about (Generalized) Linear Mixed Models.
+* I focus on (1) the [`lme4`](https://github.com/lme4/lme4) package for (Restricted) Maximum Likelihood Estimation of linear multilevel models [@bates_fitting_2015; @bates_lme4:_2012] and (2) integrating `lme4` with the [`tidyverse`](https://www.tidyverse.org/), a collection of R packages for data science (including `dplyr`, `ggplot2`, and `purrr`) with a common language and set of principles [@wickham_r_2017]. 
+* I draw from the discussion of (linear) multilevel modeling by @fox_fitting_2018 and @fox_linear_2016. The example used in these materials is originally by @raudenbush_hierarchical_2002. Part of the code is also inspired to Wickham and Grolemund's [-@wickham_r_2017] treatment of statistical modeling with R (particularly in Ch. 20). 
+* The data come from the [`MathAchieve`](https://rdrr.io/cran/nlme/man/MathAchieve.html) and [`MathAchSchool`](https://rdrr.io/cran/nlme/man/MathAchSchool.html) data frames in the [`nlme`](https://cran.r-project.org/web/packages/nlme/index.html) package. They derive from the "High School and Beyond" survey of 7185 students in 160 U.S. high schools, including 70 Catholic and 90 public schools [@fox_linear_2016; @raudenbush_hierarchical_2002]. See the links and references above for more documentation on these data.
+
+**Further reading and resources**: 
+
+* For statistical theory and more in-depth treatment of the multilevel models presented in this introduction: @goldstein_multilevel_2010; @rasbash_lemma:_2008; @snijders_multilevel_2012; @fox_applied_2016 (Ch. 23-24).
+* For more information about the R implementation of multilevel models, including different packages and estimation methods: Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about Generalized Linear Mixed Models.
 
 ## Setup instructions
 

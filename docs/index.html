@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2022-05-13" />
+<meta name="date" content="2022-05-17" />
 
-<title>Introduction to multilevel analysis in R with tidyverse and lme4</title>
+<title>Introduction to multilevel analysis in R with lme4 and tidyverse</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1551,12 +1551,12 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Introduction to multilevel analysis in R with <code>tidyverse</code> and <code>lme4</code></h1>
+<h1 class="title toc-ignore">Introduction to multilevel analysis in R with <code>lme4</code> and <code>tidyverse</code></h1>
 <h4 class="author">Raffaele Vacca</h4>
 <address class="author_afil">
 University of Milan<br><a class="author_email" href="mailto:#"><a href="https://www.raffaelevacca.com/">raffaelevacca.com</a></a>
 </address>
-<h4 class="date">2022-05-13</h4>
+<h4 class="date">2022-05-17</h4>
 
 </div>
 
@@ -1564,8 +1564,17 @@ University of Milan<br><a class="author_email" href="mailto:#"><a href="https://
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <p>This is an introduction to multilevel analysis with R for my seminars at the <a href="https://www.nasp.eu/training/phd-programmes/esls.html">UniMi NASP graduate school</a> and <a href="https://behavelab.org/">Behave Lab</a>. You can <strong>download all materials</strong> <a href="https://github.com/raffaelevacca/Intro-multilevel-with-R">here</a> (GitHub).</p>
-<p><strong>R packages and references</strong>. I focus on the <a href="https://github.com/lme4/lme4"><code>lme4</code></a> package for (Restricted) Maximum Likelihood Estimation of linear multilevel models <span class="citation">(<a href="#ref-bates_fitting_2015" role="doc-biblioref">Bates et al. 2015</a>; <a href="#ref-bates_lme4:_2012" role="doc-biblioref">Bates 2012</a>)</span> and on its integration with the <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>, a collection of R packages for data science (including <code>dplyr</code>, <code>ggplot2</code>, and <code>purrr</code>) with a common language and set of principles <span class="citation">(<a href="#ref-wickham_r_2017" role="doc-biblioref">Wickham and Grolemund 2017</a>)</span>. I draw from the presentation of (linear) multilevel modeling by <span class="citation">Fox and Weisberg (<a href="#ref-fox_fitting_2018" role="doc-biblioref">2018</a>)</span>, and from discussion of statistical modeling with R by Wickham and Grolemund <span class="citation">(<a href="#ref-wickham_r_2017" role="doc-biblioref">2017</a>, particularly Ch. 20)</span>. The data come from the <a href="https://rdrr.io/cran/nlme/man/MathAchieve.html"><code>MathAchieve</code></a> and <a href="https://rdrr.io/cran/nlme/man/MathAchSchool.html"><code>MathAchSchool</code></a> data frames in the <a href="https://cran.r-project.org/web/packages/nlme/index.html"><code>nlme</code></a> package (see the links for data documentation).</p>
-<p><strong>Further reading and resources</strong>. For statistical theory and more in-depth treatment of the multilevel models presented in this introduction, see <span class="citation">Goldstein (<a href="#ref-goldstein_multilevel_2010" role="doc-biblioref">2010</a>)</span>; <span class="citation">Rasbash, Steele, and Reckie (<a href="#ref-rasbash_lemma:_2008" role="doc-biblioref">2008</a>)</span>; and <span class="citation">Snijders and Bosker (<a href="#ref-snijders_multilevel_2012" role="doc-biblioref">2012</a>)</span>. For more information about the R implementation of multilevel models, including different packages and estimation methods, see Ben Bolker’s <a href="http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction">FAQ page</a> about (Generalized) Linear Mixed Models.</p>
+<p><strong>R packages and references</strong>:</p>
+<ul>
+<li>I focus on (1) the <a href="https://github.com/lme4/lme4"><code>lme4</code></a> package for (Restricted) Maximum Likelihood Estimation of linear multilevel models <span class="citation">(<a href="#ref-bates_fitting_2015" role="doc-biblioref">Bates et al. 2015</a>; <a href="#ref-bates_lme4:_2012" role="doc-biblioref">Bates 2012</a>)</span> and (2) integrating <code>lme4</code> with the <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>, a collection of R packages for data science (including <code>dplyr</code>, <code>ggplot2</code>, and <code>purrr</code>) with a common language and set of principles <span class="citation">(<a href="#ref-wickham_r_2017" role="doc-biblioref">Wickham and Grolemund 2017</a>)</span>.</li>
+<li>I draw from the discussion of (linear) multilevel modeling by <span class="citation">Fox and Weisberg (<a href="#ref-fox_fitting_2018" role="doc-biblioref">2018</a>)</span> and <span class="citation">Fox (<a href="#ref-fox_linear_2016" role="doc-biblioref">2016b</a>)</span>. The example used in these materials is originally by <span class="citation">Raudenbush and Bryk (<a href="#ref-raudenbush_hierarchical_2002" role="doc-biblioref">2002</a>)</span>. Part of the code is also inspired to Wickham and Grolemund’s <span class="citation">(<a href="#ref-wickham_r_2017" role="doc-biblioref">2017</a>)</span> treatment of statistical modeling with R (particularly in Ch. 20).</li>
+<li>The data come from the <a href="https://rdrr.io/cran/nlme/man/MathAchieve.html"><code>MathAchieve</code></a> and <a href="https://rdrr.io/cran/nlme/man/MathAchSchool.html"><code>MathAchSchool</code></a> data frames in the <a href="https://cran.r-project.org/web/packages/nlme/index.html"><code>nlme</code></a> package. They derive from the “High School and Beyond” survey of 7185 students in 160 U.S. high schools, including 70 Catholic and 90 public schools <span class="citation">(<a href="#ref-fox_linear_2016" role="doc-biblioref">Fox 2016b</a>; <a href="#ref-raudenbush_hierarchical_2002" role="doc-biblioref">Raudenbush and Bryk 2002</a>)</span>. See the links and references above for more documentation on these data.</li>
+</ul>
+<p><strong>Further reading and resources</strong>:</p>
+<ul>
+<li>For statistical theory and more in-depth treatment of the multilevel models presented in this introduction: <span class="citation">Goldstein (<a href="#ref-goldstein_multilevel_2010" role="doc-biblioref">2010</a>)</span>; <span class="citation">Rasbash, Steele, and Reckie (<a href="#ref-rasbash_lemma:_2008" role="doc-biblioref">2008</a>)</span>; <span class="citation">Snijders and Bosker (<a href="#ref-snijders_multilevel_2012" role="doc-biblioref">2012</a>)</span>; <span class="citation">Fox (<a href="#ref-fox_applied_2016" role="doc-biblioref">2016a</a>)</span> (Ch. 23-24).</li>
+<li>For more information about the R implementation of multilevel models, including different packages and estimation methods: Ben Bolker’s <a href="http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction">FAQ page</a> about Generalized Linear Mixed Models.</li>
+</ul>
 <div id="setup-instructions" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Setup instructions</h2>
 <p>To take this workshop you need to:</p>
@@ -3043,6 +3052,12 @@ Bates, Douglas. 2012. <em>Lme4: <span>Mixed</span>-Effects Modeling with <span>R
 <div id="ref-bates_fitting_2015" class="csl-entry">
 Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. 2015. <span>“Fitting Linear Mixed-Effects Models Using Lme4.”</span> <em>Journal of Statistical Software</em> 67 (1). <a href="https://doi.org/10.18637/jss.v067.i01">https://doi.org/10.18637/jss.v067.i01</a>.
 </div>
+<div id="ref-fox_applied_2016" class="csl-entry">
+Fox, John. 2016a. <em>Applied Regression Analysis and Generalized Linear Models</em>. Third Edition. Los Angeles: SAGE.
+</div>
+<div id="ref-fox_linear_2016" class="csl-entry">
+———. 2016b. <span>“Linear <span>Mixed</span>-<span>Effects</span> <span>Models</span> for <span>Hierarchical</span> and <span>Longitudinal</span> <span>Data</span>.”</span> In <em>Applied Regression Analysis and Generalized Linear Models</em>, Third Edition, 700–742. Los Angeles: SAGE.
+</div>
 <div id="ref-fox_fitting_2018" class="csl-entry">
 Fox, John, and Sanford Weisberg. 2018. <span>“Fitting <span>Mixed</span>-<span>Effects</span> <span>Models</span>.”</span> In <em>An <span>R</span> <span>Companion</span> to <span>Applied</span> <span>Regression</span></em>, Third edition, 335–84. Los Angeles, Calif.: SAGE Publications, Inc.
 </div>
@@ -3051,6 +3066,9 @@ Goldstein, Harvey. 2010. <em>Multilevel <span>Statistical</span> <span>Models</s
 </div>
 <div id="ref-rasbash_lemma:_2008" class="csl-entry">
 Rasbash, J., F. Steele, and George Reckie. 2008. <em><span>LEMMA</span>: <span>Learning</span> Environment for Multilevel Methodology and Applications</em>. University of Bristol: Centre for Multilevel Modelling. <a href="https://www.cmm.bris.ac.uk/lemma">https://www.cmm.bris.ac.uk/lemma</a>.
+</div>
+<div id="ref-raudenbush_hierarchical_2002" class="csl-entry">
+Raudenbush, Stephen W., and Anthony S. Bryk. 2002. <em>Hierarchical <span>Linear</span> <span>Models</span>: <span>Applications</span> and <span>Data</span> <span>Analysis</span> <span>Methods</span></em>. 2nd edition. Thousand Oaks: SAGE Publications, Inc.
 </div>
 <div id="ref-snijders_multilevel_2012" class="csl-entry">
 Snijders, Tom, and R. J. Bosker. 2012. <em>Multilevel Analysis: <span>An</span> Introduction to Basic and Advanced Multilevel Modeling</em>. 2nd edition. London; Thousand Oaks, Calif: SAGE Publications.
