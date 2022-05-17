@@ -31,7 +31,7 @@ output:
 **Further readings and resources**: 
 
 * For statistical theory, details about estimation methods, and more in-depth overall treatment of the multilevel models presented in this introduction (in chronological order): @raudenbush_hierarchical_2002; @gelman_data_2006; @rasbash_lemma:_2008; @goldstein_multilevel_2010; @snijders_multilevel_2012; @simonoff_sage_2013; @fox_applied_2016 (Ch. 23-24).
-* For more information about the R implementation of multilevel models, including different packages and estimation methods: @finch_multilevel_2014; @fox_fitting_2018;  Ben Bolker's [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about Generalized Linear Mixed Models.
+* For more information about the R implementation of multilevel models, including different packages and estimation methods: @finch_multilevel_2014; @fox_fitting_2018;  [Ben Bolker](https://math.mcmaster.ca/~bolker/)'s [FAQ page](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction) about Generalized Linear Mixed Models.
 
 ## Setup instructions
 
