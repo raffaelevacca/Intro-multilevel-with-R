@@ -337,16 +337,6 @@ summary(mod1)
 # Results in tidy format
 (mod1.res <- tidy(mod1))
 
-# To test for significance of school effect, let's estimate a null single-level
-# model
-mod1_sl <- lm(mathach ~ 1, 
-              data=df)
-
-# Compare the two models with Likelihood Ratio Test (LRT).
-anova(mod1, mod1_sl) 
-
-# Note that by default, anova() refits the models with ML so the LRT is correct.
-
 # School-level variance estimate
 (sigma2_u <- mod1.res %>%
     filter(effect == "ran_pars", group == "school") %>%
@@ -365,6 +355,16 @@ anova(mod1, mod1_sl)
 
 # Variance Partition Coefficient
 sigma2_u/(sigma2_u + sigma2_e)
+
+# To test for significance of school effect, let's estimate a null single-level
+# model
+mod1_sl <- lm(mathach ~ 1, 
+              data=df)
+
+# Compare the two models with Likelihood Ratio Test (LRT).
+anova(mod1, mod1_sl) 
+
+# Note that by default, anova() refits the models with ML so the LRT is correct.
 
 ## ---- end-var-comp
 

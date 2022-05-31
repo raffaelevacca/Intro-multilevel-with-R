@@ -17,7 +17,7 @@ output:
     theme: lumen
 ---
 
-# Introduction 
+# Introduction
 
 * This is an introduction to multilevel analysis with R for my seminars at the [UniMi NASP graduate school](https://www.nasp.eu/training/phd-programmes/esls.html) and [Behave Lab](https://behavelab.org/). 
 * **Download these materials** [here](https://github.com/raffaelevacca/Intro-multilevel-with-R) (GitHub). 
@@ -94,7 +94,7 @@ knitr::read_chunk("Multilevel_with_R.R")
 ```{r scatterplots}
 ```
 
-* _What do you notice about intercepts and slopes of the red regression lines? Are they constant among schools? _
+* _What do you notice about intercepts and slopes of the red regression lines? Are they constant across schools? _
 * _What type of relationship between student's SES and math score do you see in schools? Does this relationship change between schools?_
 * _Do you see any difference in the variability of regression lines among Catholic schools vis-a-vis Public schools?_
 
@@ -131,8 +131,8 @@ knitr::read_chunk("Multilevel_with_R.R")
 ```
 
 * _How can we interpret the results from the variance components model?_
-* _According to the LRT, are school effects significant, that is, is the school level a significant source of variation in `mathach`?_
 * _What proportion of `mathach` variation is explained by the school level? How does this compare with the correlation between math scores of two random students in the same school?_
+* _According to the LRT, are school effects significant, that is, is the school level a significant source of variation in `mathach`?_
 
 # Hierarchical Linear Model: random intercept
 
